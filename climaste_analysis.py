@@ -85,22 +85,32 @@ df.describe()
 
 # %%
 # How many stations are available in this dataset?
-
-
+session.query()
+session.query(func.count(Station.station)).all()
 # %%
 # What are the most active stations?
+session.query()
 # List the stations and the counts in descending order.
-
+session.query(Measurement.station, func.count(Measurement.station)).\
+group_by(Measurement.station).order_by(func.count(Measurement.station).desc()).all()
 
 # %%
 # Using the station id from the previous query, calculate the lowest temperature recorded, 
 # highest temperature recorded, and average temperature most active station?
-
-
+session.query()
+#session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs))
+session.query(func.min(Measurement.tobs), func.max(Measurement.tobs), func.avg(Measurement.tobs)).\
+filter(Measurement.station == 'USC00519281').all()
 # %%
 # Choose the station with the highest number of temperature observations.
+results = session.query(Measurement.tobs).\
+filter(Measurement.station == 'USC00519281').\
+filter(Measurement.date >= prev_year).all()
+df = pd.DataFrame(results, columns=['tobs'])
+# %%
 # Query the last 12 months of temperature observation data for this station and plot the results as a histogram
-
+df.plot.hist(bins=12)
+plt.tight_layout()
 
 # %%
 # Write a function called `calc_temps` that will accept start date and end date in the format '%Y-%m-%d' 
