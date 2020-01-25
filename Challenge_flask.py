@@ -31,7 +31,8 @@ session = Session(engine)
 # %%
 # Flask app
 app = Flask(__name__)
-
+# %% [markdown]
+## Notice that the last route in the welcome route below "/api/v1.0/month_stats/month" is the route I created for the challenge.
 # %%
 # Welcome route
 @app.route("/")
@@ -77,21 +78,6 @@ def temp_monthly():
     return jsonify(temps)
 
 # %%
-#@app.route("/api/v1.0/temp/<start>")
-#app.route("/api/v1.0/temp/<start>/<end>")
-#def stats(start, end):
-    #sel = [func.min(measurement.tobs),func.avg(measurement.tobs),func.max(measurement.tobs)]
-    #if not end:
-        #results = session.query(func.min(measurement.tobs),func.avg(measurement.tobs),func.max(measurement.tobs)).\
-        #filter(measurement.date >= start).filter(measurement.date <= end).all()
-        #results = session.query(*sel).\
-        #filter(measurement.date >= start).\
-        #filter(measurement.date <= end).all()
-        #temps = list(np.ravel(results))
-        #session.close()
-        #return jsonify(temps)
-
-# %%
 @app.route("/api/v1.0/temp/<start>/<end>")
 def stats(start, end):
     session = Session(engine)
@@ -100,7 +86,9 @@ def stats(start, end):
     temps = list(np.ravel(results))
     session.close()
     return jsonify(temps)
-
+# %% [markdown]
+# Challenge Part:
+## Run it and enter a number from 1 to 12 instead of the month in the route, i.e. "/api/v1.0/month_stats/6", this should give you the stats for the month of June.
 # %%
 #Month Stats Route using .describe() function
 @app.route("/api/v1.0/month_stats/<month>")
