@@ -11,7 +11,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "/Users/hebamaly/surfs_up/app.py",
+                "FLASK_APP": "/Users/hebamaly/surfs_up/Challenge_flask.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "0"
             },

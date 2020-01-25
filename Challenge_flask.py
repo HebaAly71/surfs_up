@@ -8,7 +8,8 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 from flask import Flask, jsonify
-
+from sqlalchemy import extract 
+import json
 # %%
 # Setup the DB
 engine = create_engine("sqlite:///hawaii.sqlite")
@@ -42,6 +43,7 @@ def welcome():
     /api/v1.0/stations
     /api/v1.0/tobs
     /api/v1.0/temp/start/end
+    /api/v1.0/month_stats/month
     ''')
 
 
@@ -100,11 +102,15 @@ def stats(start, end):
     return jsonify(temps)
 
 # %%
-app.route("/api/v1.0/temp/<start>/<end>")
-def stats(start, end):
+#Month Stats Route using .describe() function
+@app.route("/api/v1.0/month_stats/<month>")
+def month_stats(month):
     session = Session(engine)
-    results = session.query(func.min(measurement.tobs),func.avg(measurement.tobs),func.max(measurement.tobs)).\
-    filter(measurement.date >= start).filter(measurement.date <= end).all()
-    temps = list(np.ravel(results))
-    session.close()
-    return jsonify(temps
+    stats = []
+    stats= session.query(measurement.date, measurement.prcp, measurement.tobs, measurement.station).filter(extract('month', measurement.date)==month).all()
+    df_stats = pd.DataFrame(stats, columns=['date','precipitation','tobs','station'])
+    df_stats.set_index(df_stats['date'], inplace=True)
+    df_stats = df_stats.sort_index()
+    stats_month = df_stats.describe()
+    session.close
+    return stats_month.to_json()
